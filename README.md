@@ -23,9 +23,7 @@ Stores system users (Admin & Customer).
 - `phone`
 - `role` (Admin, Customer)
 
----
-
-### 🔹 Vehicles
+### Vehicles
 Stores information about rental vehicles.
 
 - `vehicle_id` (Primary Key)
@@ -36,9 +34,7 @@ Stores information about rental vehicles.
 - `rental_price`
 - `status` (available, rented, maintenance)
 
----
-
-### 🔹 Bookings
+### Bookings
 Stores booking information.
 
 - `booking_id` (Primary Key)
@@ -48,8 +44,6 @@ Stores booking information.
 - `end_date`
 - `status` (pending/confirmed/completed/cancelled)
 - `total_cost`
-
----
 
 ## Entity Relationship Diagram (ERD)
 
@@ -63,7 +57,7 @@ Stores booking information.
 
 ## SQL Queries Explanation
 
-### 🔹 Query 1: Retrieve Booking Information with Customer and Vehicle Details (JOIN)
+### Query 1: Retrieve Booking Information with Customer and Vehicle Details (JOIN)
 
 **Purpose:**  
 To display booking details along with the customer name and vehicle name.
