@@ -1,81 +1,107 @@
-# Vehicle Rental System — Database Design & SQL Queries
+# Vehicle Rental System – Database Design & SQL Queries
 
 ## Project Overview
 
-This project contains the **Vehicle Rental System** database designed to demonstrate database schema design, ERD relationships, and SQL query writing skills. In this project, i will define a relational database schema and write SQL queries to answer business questions related to vehicle rentals.
+This project is part of the **Level 2 Web Development – Database Assignment**.  
+The objective of this assignment is to demonstrate understanding of:
 
-## Database Description
+- Relational Database Design  
+- Entity Relationship Diagram (ERD)  
+- SQL Queries using JOIN, WHERE, GROUP BY, HAVING, and Subqueries  
 
-The Vehicle Rental System manages:
+The system represents a **Vehicle Rental System**, where customers can book vehicles and administrators can manage vehicles and bookings.
 
-- **Users** — System users (Admins & Customers)  
-- **Vehicles** — Vehicles available for rent  
-- **Bookings** — Customer bookings of vehicles  
+## Database Tables Overview
 
-### Business Rules
-- Each user has a role (Admin or Customer) and unique email.  
-- Vehicles have a unique registration number and availability status.  
-- Bookings link users and vehicles, with rental start/end dates and status.
+### Users
+Stores system users (Admin & Customer).
 
-## ERD (Entity Relationship Diagram)
+- `user_id` (Primary Key)
+- `name`
+- `email` (unique)
+- `password`
+- `phone`
+- `role` (Admin, Customer)
 
-**ERD Link:** *https://lucid.app/lucidchart/b6ab14e2-1965-4c61-a582-6fc547a1dc83/edit?invitationId=inv_ee69a085-60f2-42fb-a260-4335bf8277ff&page=0_0#*
+---
 
-- Primary Keys & Foreign Keys  
-- One-to-Many: User → Bookings  
-- Many-to-One: Bookings → Vehicles  
-- Logical One-to-One between booking & each user/vehicle  
-- All status fields defined in the schema
+### 🔹 Vehicles
+Stores information about rental vehicles.
 
-## Database Create Queries
+- `vehicle_id` (Primary Key)
+- `name`
+- `type` (car, bike, truck)
+- `model`
+- `registration_number` (unique)
+- `rental_price`
+- `status` (available, rented, maintenance)
 
-### Queries ENUM: 
-    CREATE TYPE user_role AS ENUM ('Admin', 'Customer');
-    CREATE TYPE vehicle_type AS ENUM ('car', 'bike', 'truck');
-    CREATE TYPE vehicle_status AS ENUM ('available', 'rented', 'maintenance');
-    CREATE TYPE booking_status AS ENUM ('pending', 'confirmed', 'completed','cancelled');
+---
 
-### Users Table: 
-    CREATE TABLE users (
-        user_id BIGSERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        email VARCHAR(150) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        role user_role NOT NULL,
-        phone VARCHAR(20)
-    );
+### 🔹 Bookings
+Stores booking information.
 
-### vehicles Table: 
-    CREATE TABLE vehicles (
-        vehicle_id BIGSERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        type vehicle_type NOT NULL,
-        model VARCHAR(100),
-        registration_number VARCHAR(50) UNIQUE NOT NULL,
-        rental_price DECIMAL(10,2) NOT NULL,
-        status vehicle_status DEFAULT 'available'
-    );
+- `booking_id` (Primary Key)
+- `user_id` (Foreign Key → users)
+- `vehicle_id` (Foreign Key → vehicles)
+- `start_date`
+- `end_date`
+- `status` (pending/confirmed/completed/cancelled)
+- `total_cost`
 
-### bookings Table
-    CREATE TABLE bookings (
-        booking_id BIGSERIAL PRIMARY KEY,
-        user_id BIGINT NOT NULL,
-        vehicle_id BIGINT NOT NULL,
-        start_date DATE NOT NULL,
-        end_date DATE NOT NULL,
-        status booking_status DEFAULT 'pending',
-        total_cost DECIMAL(10,2) NOT NULL,
+---
 
-        CONSTRAINT fk_user
-            FOREIGN KEY (user_id)
-            REFERENCES users(user_id)
-            ON DELETE CASCADE,
+## Entity Relationship Diagram (ERD)
 
-        CONSTRAINT fk_vehicle
-            FOREIGN KEY (vehicle_id)
-            REFERENCES vehicles(vehicle_id)
-            ON DELETE RESTRICT
-    );
+**ERD Link:**  
+*https://lucid.app/lucidchart/b6ab14e2-1965-4c61-a582-6fc547a1dc83/edit?invitationId=inv_ee69a085-60f2-42fb-a260-4335bf8277ff&page=0_0#*
 
+### Relationships:
+- One User can have many Bookings (1 → Many)
+- One Vehicle can have many Bookings (1 → Many)
+- Each Booking belongs to one User and one Vehicle
 
+## SQL Queries Explanation
 
+### 🔹 Query 1: Retrieve Booking Information with Customer and Vehicle Details (JOIN)
+
+**Purpose:**  
+To display booking details along with the customer name and vehicle name.
+
+**Explanation:**  
+- `bookings` is used as the main table  
+- `users` table is joined using `user_id` to get customer details  
+- `vehicles` table is joined using `vehicle_id` to get vehicle details  
+- `INNER JOIN` ensures only matching records are shown
+
+### Query 2: Find Vehicles That Have Never Been Booked (NOT EXISTS)
+
+**Purpose:**  
+To identify vehicles that have never been booked.
+
+**Explanation:**  
+- Selects all vehicles from the `vehicles` table  
+- Uses a subquery with `NOT EXISTS` to check whether the vehicle appears in the `bookings` table  
+- If no matching booking exists, the vehicle is returned
+
+### Query 3: Retrieve Available Vehicles of a Specific Type (WHERE)
+
+**Purpose:**  
+To retrieve vehicles that are currently available and belong to a specific type (e.g., car).
+
+**Explanation:**  
+- Uses the `WHERE` clause to filter rows  
+- Filters vehicles where:
+  - `status = 'available'`
+  - `type = 'car'`  
+
+### Query 4: Find Vehicles with More Than 2 Bookings (GROUP BY & HAVING)
+
+**Purpose:**  
+To find vehicles that have been booked more than two times.
+
+**Explanation:**  
+- Joins `vehicles` and `bookings` tables using `vehicle_id`  
+- Groups records by vehicle  
+- Uses `COUNT()` to calculate total bookings per vehicle  
+- `HAVING` filters grouped results where booking count is greater than 2 
