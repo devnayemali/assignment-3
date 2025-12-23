@@ -1,13 +1,10 @@
-
-
 SELECT
     b.booking_id AS booking_id,
     u.name AS customer_name,
     v.name AS vehicle_name,
     b.start_date,
     b.end_date,
-    b.status,
-    b.total_cost
+    b.status
 FROM bookings as b
 INNER JOIN users as u ON b.user_id = u.user_id
 INNER JOIN vehicles as v ON b.vehicle_id = v.vehicle_id;
@@ -42,9 +39,8 @@ WHERE status = 'available'
   AND type = 'car';
 
 
-SELECT 
-  v.vehicle_id, 
-  v.name, 
+SELECT  
+  v.name as vehicle_name, 
   COUNT(b.booking_id) AS total_bookings 
 FROM vehicles v
 JOIN bookings b ON 
