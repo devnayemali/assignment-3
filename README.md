@@ -2,9 +2,7 @@
 
 ## Project Overview
 
-This project contains the **Vehicle Rental System** database assignment designed to demonstrate database schema design, ERD relationships, and SQL query writing skills. In this project, i will define a relational database schema and write SQL queries to answer business questions related to vehicle rentals.
-
----
+This project contains the **Vehicle Rental System** database designed to demonstrate database schema design, ERD relationships, and SQL query writing skills. In this project, i will define a relational database schema and write SQL queries to answer business questions related to vehicle rentals.
 
 ## Database Description
 
